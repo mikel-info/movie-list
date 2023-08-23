@@ -9,17 +9,13 @@ import {
 	IconButton,
 	Typography,
 	Grid,
-	CardActions,
-	Collapse,
 	Box,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { red } from "@mui/material/colors";
 import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useParams } from "react-router-dom";
-import { styled } from "@mui/material/styles";
 import noImage from "../../assets/img/noImage.jpg";
 import {
 	faAward,
@@ -33,17 +29,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { capitalizeFirstLetter } from "../../helpers/stringManipulations";
 
-const ExpandMore = styled((props) => {
-	const { expand, ...other } = props;
-	return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-	transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-	marginLeft: "auto",
-	transition: theme.transitions.create("transform", {
-		duration: theme.transitions.duration.shortest,
-	}),
-}));
-
 const useStyles = makeStyles((theme) => ({
 	center: {
 		display: "flex",
@@ -54,6 +39,11 @@ const useStyles = makeStyles((theme) => ({
 	containerMovie: {
 		justifyContent: "center",
 		paddingTop: "2%",
+	},
+	detailsText: {
+		display: "flex",
+		justifyContent: "center",
+		fontSize: "20px !important",
 	},
 	noDataText: {
 		fontFamily: "Lucida Console, Monaco, monospace",
@@ -77,7 +67,6 @@ function SelectedMovies() {
 	const params = useParams();
 
 	const [movieDetails, setMovieDetails] = React.useState([]);
-	const [expanded, setExpanded] = React.useState(false);
 
 	const getDetailsMovies = (movieId) => {
 		axios
@@ -89,10 +78,6 @@ function SelectedMovies() {
 				setMovieDetails([res.data]);
 			})
 			.catch((error) => console.log(error));
-	};
-
-	const handleExpandClick = () => {
-		setExpanded(!expanded);
 	};
 
 	React.useEffect(() => {
@@ -136,55 +121,45 @@ function SelectedMovies() {
 							{item.Plot}
 						</Typography>
 					</CardContent>
-					<CardActions disableSpacing>
-						<ExpandMore
-							expand={expanded}
-							onClick={handleExpandClick}
-							aria-expanded={expanded}
-							aria-label="show more"
-						>
-							<ExpandMoreIcon />
-						</ExpandMore>
-					</CardActions>
-					<Collapse in={expanded} timeout="auto" unmountOnExit>
-						<CardContent>
-							<Typography paragraph>
-								<FontAwesomeIcon icon={faClock} /> Runtime: {item.Runtime}
-							</Typography>
-							<Typography paragraph>
-								<FontAwesomeIcon icon={faClapperboard} /> Genre: {item.Genre}
-							</Typography>
-							<Typography paragraph>
-								<FontAwesomeIcon icon={faEarthEurope} /> Country: {item.Country}
-							</Typography>
-							<Typography paragraph>
-								<FontAwesomeIcon icon={faStreetView} /> Director:{" "}
-								{item.Director}
-							</Typography>
-							<Typography paragraph>
-								<FontAwesomeIcon icon={faFilePen} /> Writer: {item.Writer}
-							</Typography>
-							<Typography paragraph>
-								<FontAwesomeIcon icon={faUsers} /> Actors: {item.Actors}
-							</Typography>
-							<Typography paragraph>
-								<FontAwesomeIcon icon={faAward} /> Awards:{" "}
-								{item.Awards === "N/A" ? "-" : item.Awards}
-							</Typography>
-							<Typography paragraph>
-								<FontAwesomeIcon icon={faStarHalfStroke} /> Ratings:{" "}
-								{item.Ratings.length === 0 ? "-" : item.Ratings[0].Value}
-							</Typography>
-							<Typography paragraph>
-								<FontAwesomeIcon icon={faClapperboard} /> Votes:{" "}
-								{item.imdbVotes}
-							</Typography>
-							<Typography paragraph>
-								<FontAwesomeIcon icon={faClapperboard} /> Type:{" "}
-								{capitalizeFirstLetter(item.Type)}
-							</Typography>
-						</CardContent>
-					</Collapse>
+
+					<CardContent>
+						<Typography paragraph classes={{ root: classes.detailsText }}>
+							Details
+						</Typography>
+						<Typography paragraph>
+							<FontAwesomeIcon icon={faClock} /> Runtime: {item.Runtime}
+						</Typography>
+						<Typography paragraph>
+							<FontAwesomeIcon icon={faClapperboard} /> Genre: {item.Genre}
+						</Typography>
+						<Typography paragraph>
+							<FontAwesomeIcon icon={faEarthEurope} /> Country: {item.Country}
+						</Typography>
+						<Typography paragraph>
+							<FontAwesomeIcon icon={faStreetView} /> Director: {item.Director}
+						</Typography>
+						<Typography paragraph>
+							<FontAwesomeIcon icon={faFilePen} /> Writer: {item.Writer}
+						</Typography>
+						<Typography paragraph>
+							<FontAwesomeIcon icon={faUsers} /> Actors: {item.Actors}
+						</Typography>
+						<Typography paragraph>
+							<FontAwesomeIcon icon={faAward} /> Awards:{" "}
+							{item.Awards === "N/A" ? "-" : item.Awards}
+						</Typography>
+						<Typography paragraph>
+							<FontAwesomeIcon icon={faStarHalfStroke} /> Ratings:{" "}
+							{item.Ratings.length === 0 ? "-" : item.Ratings[0].Value}
+						</Typography>
+						<Typography paragraph>
+							<FontAwesomeIcon icon={faClapperboard} /> Votes: {item.imdbVotes}
+						</Typography>
+						<Typography paragraph>
+							<FontAwesomeIcon icon={faClapperboard} /> Type:{" "}
+							{capitalizeFirstLetter(item.Type)}
+						</Typography>
+					</CardContent>
 				</Card>
 			))}
 		</Grid>
